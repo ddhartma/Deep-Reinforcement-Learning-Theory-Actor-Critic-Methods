@@ -57,22 +57,22 @@ $ export PATH="/path/to/anaconda/bin:$PATH"
 - Change Directory to your project older, e.g. `cd my_github_projects`
 - Clone the Github Project inside this folder with Git Bash (Terminal) via:
 ```
-$ git clone https://github.com/ddhartma/Sparkify-Project.git
+$ git clone https://github.com/ddhartma/Deep-Reinforcement-Learning-Theory-Actor-Critic-Methods.git
 ```
 
 - Change Directory
 ```
-$ cd Sparkify-Project
+$ cd Deep-Reinforcement-Learning-Theory-Actor-Critic-Methods
 ```
 
 - Create a new Python environment, e.g. spark_env. Inside Git Bash (Terminal) write:
 ```
-$ conda create --name spark_env
+$ conda create --name drl_env
 ```
 
 - Activate the installed environment via
 ```
-$ conda activate spark_env
+$ conda activate drl_env
 ```
 
 - Install the following packages (via pip or conda)
@@ -81,7 +81,6 @@ numpy = 1.12.1
 pandas = 0.23.3
 matplotlib = 2.1.0
 seaborn = 0.8.1
-pyspark = 2.4.3
 ```
 
 - Check the environment installation via
@@ -90,7 +89,7 @@ $ conda env list
 ```
 
 ## Acknowledgments <a name="Acknowledgments"></a>
-* This project is part of the Udacity Nanodegree program 'Data Science'. Please check this [link](https://www.udacity.com) for more information.
+* This project is part of the Udacity Nanodegree program 'Deep Reinforcement Learning'. Please check this [link](https://www.udacity.com) for more information.
 
 ## Further Links <a name="Further_Links"></a>
 
