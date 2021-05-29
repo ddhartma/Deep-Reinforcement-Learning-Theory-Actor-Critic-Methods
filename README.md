@@ -121,19 +121,98 @@ you're **adding bias** into your calculations. Your agent will learn faster, but
     ![image6]
 
 
-
-
 ## Baselines and Critics <a name="baselines"></a> 
+- Check this out: [Understanding Baseline Techniques for REINFORCE](https://medium.com/@fork.tree.ai/understanding-baseline-techniques-for-reinforce-53a1e2279b57)
+- The return **G** is calculated from the total discounted return. This is simply a Monte Carlo estimate (with high variance). You use then a **baseline to reduce the variance** of the REINFORCE algorithm.   
+- The **baseline can be learned by using DEEP LEARNING**. 
+- Monte Carlo estimate has high variance and no bias.
+- TD estimate has low variance and low bias.
+- ***Critic implies that bias has been introduced***
+- You can use Monte Carlo or TD estimates to train baselines.
+- By using **MC estimates** to train baselines we have **no CRITIC**.
+- By using **TD estimates** to train baselines we have a **CRITIC**.
+- With **TD estimates** we are **introducing bias** but also we are **reducing variance** thus **improving convergence properties** and **speeding up learning**.
+- ***Goal of In Actor-Critic Methods***: Try to continuously reduce the high-variance associated with policy-based agents. Use TD estimates to achieve this goal.
+- Actor-Critic methods show faster learning than policy-based agents alone and better convergence than value-based agents alone.
 
 ## Policy-based, Value-based and Actor-Critic <a name="actor_critic"></a> 
+- In Policy-based methods the agent is learning to act (like playing a game)
+- In Value-based methods the agent is learning to estimate situations and actions
+- **GOOD IDEA**: Combine these two approaches
+- In ***pure Policy-based methods*** you need lots of data and lots of time for training (to increase the probability of actions that lead to a win and decrease the probability of actions that lead to losses) --> ***inefficient approach*** 
+- In addition: Many actions within a game that ended up in a loss could have been really good actions. --> ***Decreasing the probability of good actions taken in a lost game is not optimal***. Using this information could speed up learning further.
+- A ***Critic or Value-based approach*** learns differently: At each time step the agent guesses what the final score is going to be. Guesses become better and better. The agent can separate good from bad situations better and better. The better the agent can make these distinctions the better the agent performs. Guesses introduce a bias (especially in the beginning, as guesses are wrong without experience). Guesses are prone to under or overestimation.
+
+    ![image7]
+
+### Why Actor-Critic Agent?
+- ***Actor-Critic Agents*** learn by playing games and **adjusting probabilities of good and bad action sequences** (**policy-based** agent) and use a **critic to distinguish good from bad actions** during the game ***to speed up learning and to enhance convergence*** (**value-based** agent). 
 
 ## A Basis Actor-Critic Agent <a name="basis"></a> 
+- An Actor-Critic Agent uses **Function Approximation** to learn a **policy** and a **value function**
+- **Two neural networks**: 
+    - one for the actor: Takes in a state and outputs the distribution of actions
+    - one for the critic: Takes in a state and outputs a state value function of policy π, **V<sub>π</sub>**
+- The critic will learn to evaluate the state value function **V<sub>π</sub>** using the TD estimate.
+- Using the critic we will calculate the advantage function and train the actor using this value.
+
+### Input - Output flow:
+- State **s** as input
+- Get experience tuple **(s, a, r, s')**
+- Use the TD estimate 
+
+    ![image8]
 
 ## A3C: Asynchronous Advantage Actor-Critic, N-step Bootstrapping <a name="a3c_1"></a> 
+- Actor-Critic Agent as before
+- Instead of TD estimate agent uses ***n-step bootstrapping***: A generalization of TD and Monte-Carlo estimates
+- TD is a one-step bootstrapping. Agent experiences one-time-step of real rewards and bootstraps right there
+- Monte-Carlo does not really bootstrap or let's say it is an infinite step bootstrapping
+- **n-step bootstrapping** takes n-steps before bootstrapping. 
 
-## A3C: Asynchronous Advantage Actor-Critic, Parallel Training <a name="a3c_2"></a> 
+    ![image9]
+
+- n-step bootstrapping means that the agent will wait a little bit longer, i.e. ***elongate exploration***, before it guesses what the final score will look like (i.e. calculates the expected return of the original state).
+- Benefit: ***Faster convergence*** with ***less experience required*** and ***reduction of bias***. 
+- In Practice: 4 or 5 steps bootstrapping are often the best.
+
+
+## A3C: Asynchronous Advantage Actor-Critic, Parallel Training <a name="a3c_2"></a>
+ - Unlike DQN, AC3 does not use a replay buffer.
+ - In DQN we needed a replay buffer to decorrelate state-action tuples of consecutive time steps (experience at time step t+1 will be correlated to experience at time step t)
+
+    ![image10]
+
+### Parallel training
+- A3C **replaces** the replay buffer with **parallel training**.
+- Create multiple instances of the environment and the agent
+- Run them all at the same time
+- Agent will receive minibatches of experiences just as we need.
+- Samples will be decorrelated because agents will likely experience different states at any given time.
+- Besides on-policy learning (more stable learning) is possible.
+
+    ![image11]
+
 
 ## A3C: Asynchronous Advantage Actor-Critic, Off-policy vs. On-policy <a name="a3c_3"></a> 
+- ***On-Policy learning***: Policy which is used for interacting with the environment is also the policy being learned (e.g. Sarsa)
+- ***Off-Policy learning***: Policy which is used for interacting with the environment is different from the policy being learned (Q-Learning)
+- In SARSA: The action for calculating the TD target and TD error is the action of the following time step **A'**.
+- In Q-Learning: The action used for calculating the TD target is the action with the highest value. Here this is not necessarily **A'**. 
+- In Q-Learning the agent may choose an exploratory action in the next step. Q-learning learns a deterministic optimal policy.
+- In SARSA that action (exploratory or not) is already been chosen. SARSA learns the best exploratory policy.
+
+    ![image12]
+
+- DQN ia also an off-policy method. Agent behaves with some exploratory greedy policy to learn the optimal policy.
+
+- When using off-policy learning agents are able to learn from many different sources including experiences generated by all versions of the agent itself (~the replay buffer).
+- Problem of off-policy learning: known to be unstable, diverge with neural networks.
+
+### What kind of policy uses A3C now?
+- A3C is an ***on-policy learning*** method.
+
+- [Q-Prop paper](https://arxiv.org/abs/1611.02247)
 
 ## A2C: Advantage Actor-Critic <a name="a2c"></a> 
 
@@ -216,6 +295,7 @@ Docstrings, DRY, PEP8
 
 Further Deep Reinforcement Learning References
 * [Very good summary of DQN](https://medium.com/@nisheed/udacity-deep-reinforcement-learning-project-1-navigation-d16b43793af5)
+* [Understanding Baseline Techniques for REINFORCE](https://medium.com/@fork.tree.ai/understanding-baseline-techniques-for-reinforce-53a1e2279b57)
 * [Cheatsheet](https://raw.githubusercontent.com/udacity/deep-reinforcement-learning/master/cheatsheet/cheatsheet.pdf)
 * [Reinforcement Learning Textbook](https://s3-us-west-1.amazonaws.com/udacity-drlnd/bookdraft2018.pdf)
 * [Reinforcement Learning Textbook - GitHub Repo to Python Examples](https://github.com/ShangtongZhang/reinforcement-learning-an-introduction)
