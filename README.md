@@ -11,6 +11,12 @@
 [image11]: assets/11.png 
 [image12]: assets/12.png 
 [image13]: assets/13.png 
+[image14]: assets/14.png 
+[image15]: assets/15.png 
+[image16]: assets/16.png 
+[image17]: assets/17.png 
+[image18]: assets/18.png 
+
 
 # Deep Reinforcement Learning Theory - Actor-Critic Methods
 
@@ -26,9 +32,11 @@
 - [A3C: Asynchronous Advantage Actor-Critic, Parallel Training](#a3c_2)
 - [A3C: Asynchronous Advantage Actor-Critic, Off-policy vs. On-policy](#a3c_3)
 - [A2C: Advantage Actor-Critic](#a2c)
+- [A2C: Code Walk-through](#a2c_code)
 - [GAE: Generalized Advantage Estimation](#gae)
 - [DDPG: Deep Deterministic Policy Gradient, Continuous Action-space](#ddpg_1)
 - [DDPG: Deep Deterministic Policy Gradient, Soft Updates](#ddpg_2)
+- [DDPG: Code Walk-through](#ddpg_code)
 - [Setup Instructions](#Setup_Instructions)
 - [Acknowledgments](#Acknowledgments)
 - [Further Links](#Further_Links)
@@ -151,15 +159,17 @@ you're **adding bias** into your calculations. Your agent will learn faster, but
 ## A Basis Actor-Critic Agent <a name="basis"></a> 
 - An Actor-Critic Agent uses **Function Approximation** to learn a **policy** and a **value function**
 - **Two neural networks**: 
-    - one for the actor: Takes in a state and outputs the distribution of actions
-    - one for the critic: Takes in a state and outputs a state value function of policy π, **V<sub>π</sub>**
-- The critic will learn to evaluate the state value function **V<sub>π</sub>** using the TD estimate.
+    - **actor** network: Takes in **a state** and outputs a policy (which defines a **distribution over actions conditioned on states**, π(a|s) or learn the parameters **θ** of this functional approximation.)
+    - **critic** network: Takes in **a state** and outputs a **state value function of policy π**, **V<sub>π</sub>**
+- The **critic** will learn to evaluate the **state value function** **V<sub>π</sub>** using the **TD estimate**.
 - Using the critic we will calculate the advantage function and train the actor using this value.
 
 ### Input - Output flow:
 - State **s** as input
 - Get experience tuple **(s, a, r, s')**
-- Use the TD estimate 
+- Use the TD estimate to train the critic
+- Use the critic to calculate the Advantage function
+- Train the actor using the calculated Advantage as a baseline
 
     ![image8]
 
@@ -195,10 +205,12 @@ you're **adding bias** into your calculations. Your agent will learn faster, but
 
 
 ## A3C: Asynchronous Advantage Actor-Critic, Off-policy vs. On-policy <a name="a3c_3"></a> 
-- ***On-Policy learning***: Policy which is used for interacting with the environment is also the policy being learned (e.g. Sarsa)
+- Helpful medium blog post on policies [Off-policy vs On-Policy vs Offline Reinforcement Learning Demystified!](https://kowshikchilamkurthy.medium.com/off-policy-vs-on-policy-vs-offline-reinforcement-learning-demystified-f7f87e275b48)
+- Check out my GitHub page on [Temporal Difference Methods - SARSA and Q-Learning](https://github.com/ddhartma/Deep-Reinforcement-Learning-Theory-Temporal-Difference-Methods#sarsamax). Check out the images and tables on SARSA and Q-Learning to understand the on and off policy difference. 
+- ***On-Policy learning***: Policy which is used for interacting with the environment is also the policy being learned (e.g. SARSA)
 - ***Off-Policy learning***: Policy which is used for interacting with the environment is different from the policy being learned (Q-Learning)
-- In SARSA: The action for calculating the TD target and TD error is the action of the following time step **A'**.
-- In Q-Learning: The action used for calculating the TD target is the action with the highest value. Here this is not necessarily **A'**. 
+- In SARSA (On-Policy learning): The action for calculating the TD target and TD error is the action of the following time step **A'**.
+- In Q-Learning (Off-Policy learning): The action used for calculating the TD target is the action with the highest value. Here this is not necessarily **A'**. 
 - In Q-Learning the agent may choose an exploratory action in the next step. Q-learning learns a deterministic optimal policy.
 - In SARSA that action (exploratory or not) is already been chosen. SARSA learns the best exploratory policy.
 
@@ -215,12 +227,101 @@ you're **adding bias** into your calculations. Your agent will learn faster, but
 - [Q-Prop paper](https://arxiv.org/abs/1611.02247)
 
 ## A2C: Advantage Actor-Critic <a name="a2c"></a> 
+### What means ***Asynchronous*** in 'Asynchronous Advantage Actor-Critic'?
+- In A3C: Each agent uses a **local copy of the network** to collect experience, calculate and **accumulate gradient updates** across **multiple time steps** and applies them **asynchronously** to a neural network.
+- Asynchronous means that each agent will update the network on its own.
+- They weights which one agent is using might be different from the other agents' weights at any given time.
+
+### Synchoronous version of A3C: Advantage Actor-Critic --> A2C
+A2C **synchronizes** all agents:
+- It **waits for all agents** to finish a segment of interaction with its copy of the environment.
+- Then it **updates the network at once**.
+- Then updated weights will be sent back to all agents.
+
+Consider:
+- A2C is simpler to implement
+- Gives pretty much the same results as A3C 
+- A3C is most easily trained on CPU 
+- A2C is normally trained on GPU
+
+![image13]
+
+
+## A2C: Code Walk-through <a name="a2c_code"></a> 
+- GitHub repo of [ShangtongZhang - Deep RL](https://github.com/ShangtongZhang/DeepRL)
+- Video tutorial on YouTube [Video](https://www.youtube.com/watch?time_continue=7&v=LiUBJje2N0c&feature=emb_logo)
+
 
 ## GAE: Generalized Advantage Estimation <a name="gae"></a> 
+- Use **λ return**
+- n-step bootstrapping with n>1 often performs better
+- However: It is still hard to tell what the number should be
+- Idea of **λ return**: Create a mixture of all n-step bootstrapping estimates at once
+- **λ** is a hyperparameter used for weighting the combination of each n-step estimate to the return
+- Exponential decay of **λ return** with increasing n
+- Example: **λ** = 0.5
+- Calculating the **λ return** for state **S<sub>t</sub>**: Multiply all n-step returns with the corresponding weight and add them all up.
+- For **λ** = 0: The lambda return is equivalent to the One-step TD estimate.
+- For **λ** = 1: The lambda return is equivalent to the Infinte-step MC estimate.
+- For 0 < **λ** <1: mixture of all n-step bootstrapping estimates 
+
+Keep in mind:
+- This type of return can be combined with any policy-based method.
+- Training is very quick because multiple value functions spread around on every time step.
+
+- Link to the GAE paper: [High-Dimensional Continuous Control Using Generalized Advantage Estimation](https://arxiv.org/abs/1506.02438)
+
+    ![image14]
 
 ## DDPG: Deep Deterministic Policy Gradient, Continuous Action-space <a name="ddpg_1"></a> 
+- Read the [DDPG Paper](https://arxiv.org/abs/1509.02971)
+- DDPG is a different kind of actor-critic method.
+
+However: It could be even **regarded as a DQN instead of an Actor Crtitc**.
+- Reason: The critic in DDPG is used to approximate the maximizer over the Q values of the next state and not as a learned baseline.
+- One limitation of DQN agent is that it is not straightforward to use in continuous action spaces.
+
+Example (discrete action space):
+- Imagine a DQN network that takes in a state and outputs the action value function.
+- Imagine that there are five possible actions: Up and Down, left, right, jump
+- **Q(s, "up")** gives you the estimated expected value for selecting the up action in state s (-2.18)
+- **Q(s, "down")** gives you the estimated expected value for selecting the down action in state s (8.45)
+- To find the max action value function for this state, you take the max of these values (9.12)
+
+What if you have an action with continuous range?
+- Imagine that the jump action is continuous (1...100cm)
+- A DDPG can solve those tasks with continuous action spaces
+
+    ![image15]
+
+What is the DDPG architecture?
+- Two neural networks 
+    - Actor network: used to approximate the **optimal policy deterministically**. We want to output the **best believed action** for any given state. It learns the **argmax<sub>a</sub>Q(s,a)**, which is the best action.
+    - Critic network: learns to evaluate the **optimal action value function** by using the actors **best believed action**.
+- The architecture is similar to DQN.
+
+    ![image16]
 
 ## DDPG: Deep Deterministic Policy Gradient, Soft Updates <a name="ddpg_2"></a> 
+Two aspects of DDPG are interesting:
+- The use of a replay buffer
+- Soft updates to the target network
+
+Update strategy in DDPG:
+- In DDPG there are **two copies of the network weights** for each network:
+    - A regular for the actor and a regular for the critic 
+    - A target for the actor and a target for the critic 
+- Soft update strategy consists of slowly blending regular network weights with your target network weights.
+- You make target network be 99.99% of your target network weights and only 0.01% of your regular network weights.
+- You slowly mix in your regular network weights into your target network weights.
+- The regular network is the most up to date network because it is the one we are training. The target network is the one we use for prediction to stabilize strain. 
+- In practice, you'll get a faster convergence by using this update strategy.
+- This target network update strategy can be used  with other algorithms that use target networks including DQN.
+
+    ![image17]
+
+
+## DDPG: Code Walk-through <a name="ddpg_code"></a>
 
 
 ## Setup Instructions <a name="Setup_Instructions"></a>
@@ -295,6 +396,7 @@ Docstrings, DRY, PEP8
 
 Further Deep Reinforcement Learning References
 * [Very good summary of DQN](https://medium.com/@nisheed/udacity-deep-reinforcement-learning-project-1-navigation-d16b43793af5)
+* Helpful medium blog post on policies [Off-policy vs On-Policy vs Offline Reinforcement Learning Demystified!](https://kowshikchilamkurthy.medium.com/off-policy-vs-on-policy-vs-offline-reinforcement-learning-demystified-f7f87e275b48)
 * [Understanding Baseline Techniques for REINFORCE](https://medium.com/@fork.tree.ai/understanding-baseline-techniques-for-reinforce-53a1e2279b57)
 * [Cheatsheet](https://raw.githubusercontent.com/udacity/deep-reinforcement-learning/master/cheatsheet/cheatsheet.pdf)
 * [Reinforcement Learning Textbook](https://s3-us-west-1.amazonaws.com/udacity-drlnd/bookdraft2018.pdf)
