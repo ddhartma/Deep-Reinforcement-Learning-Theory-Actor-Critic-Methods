@@ -43,7 +43,7 @@
 - [Acknowledgments](#Acknowledgments)
 - [Further Links](#Further_Links)
 
-## Introduction <a name="what_is_reinforcement"></a>
+## Introduction <a id="what_is_reinforcement"></a>
 - Reinforcement learning is **learning** what to do — **how to map situations to actions** — so as **to maximize a numerical reward** signal. The learner is not told which actions to take, but instead must discover which actions yield the most reward by trying them. (Sutton and Barto, [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/the-book.html))
 - Deep reinforcement learning refers to approaches where the knowledge is represented with a deep neural network
 
@@ -67,7 +67,7 @@
     - bringing together the best of both worlds, to solve challenging reinforcement learning problems
 
 
-## Motivation <a name="mot"></a>
+## Motivation <a id="mot"></a>
 - Methods that **learn both policies and value functions** are referred to as **actor-critic** because the **policy, which selects actions,** can be seen as an **actor**, and the **value function, which evaluates policies,** can be seen as a **critic**.
 - Actor-critic methods often **perform better than value-based or policy-gradient methods** alone on many of the deep reinforcement learning benchmarks.
 
@@ -78,7 +78,7 @@
 - Train a **neural network to approximate a value function** and then **use it as a baseline**
 - All actor-critic methods use **value-based techniques** to further **reduce the variance of policy-based methods**.
 
-## Bias and Variance <a name="bias"></a>
+## Bias and Variance <a id="bias"></a>
 - What is Bias and Variance?
 
     ![image2]
@@ -96,7 +96,7 @@
 - The question is, what's the best way to
 estimate value functions.
 
-## Two Ways For Estimating Expected Returns <a name="exp_ret"></a>
+## Two Ways For Estimating Expected Returns <a id="exp_ret"></a>
 - ***Monte Carlo Estimate***:
     - The Monte-Carlo estimate consists of **rolling out an episode** and calculating the discounted total reward from the rewards sequence.
     - For example, in an episode A, you start in state **S<sub>t</sub>**, take action **A<sub>t</sub>** and a reward **R<sub>t+1</sub>** and sends you to a new state **S<sub>t+1</sub>**, ... and so on until you reach the end of the episode.
@@ -131,7 +131,7 @@ you're **adding bias** into your calculations. Your agent will learn faster, but
     ![image6]
 
 
-## Baselines and Critics <a name="baselines"></a>
+## Baselines and Critics <a id="baselines"></a>
 - Check this out: [Understanding Baseline Techniques for REINFORCE](https://medium.com/@fork.tree.ai/understanding-baseline-techniques-for-reinforce-53a1e2279b57)
 - The return **G** is calculated from the total discounted return. This is simply a Monte Carlo estimate (with high variance). You use then a **baseline to reduce the variance** of the REINFORCE algorithm.   
 - The **baseline can be learned by using DEEP LEARNING**.
@@ -145,7 +145,7 @@ you're **adding bias** into your calculations. Your agent will learn faster, but
 - ***Goal of In Actor-Critic Methods***: Try to continuously reduce the high-variance associated with policy-based agents. Use TD estimates to achieve this goal.
 - Actor-Critic methods show faster learning than policy-based agents alone and better convergence than value-based agents alone.
 
-## Policy-based, Value-based and Actor-Critic <a name="actor_critic"></a>
+## Policy-based, Value-based and Actor-Critic <a id="actor_critic"></a>
 - In Policy-based methods the agent is learning to act (like playing a game)
 - In Value-based methods the agent is learning to estimate situations and actions
 - **GOOD IDEA**: Combine these two approaches
@@ -158,7 +158,7 @@ you're **adding bias** into your calculations. Your agent will learn faster, but
 ### Why Actor-Critic Agent?
 - ***Actor-Critic Agents*** learn by playing games and **adjusting probabilities of good and bad action sequences** (**policy-based** agent) and use a **critic to distinguish good from bad actions** during the game ***to speed up learning and to enhance convergence*** (**value-based** agent).
 
-## A Basis Actor-Critic Agent <a name="basis"></a>
+## A Basis Actor-Critic Agent <a id="basis"></a>
 - An Actor-Critic Agent uses **Function Approximation** to learn a **policy** and a **value function**
 - **Two neural networks**:
     - **actor** network: Takes in **a state** and outputs a policy (which defines a **distribution over actions conditioned on states**, π(a|s) or learn the parameters **θ** of this functional approximation.)
@@ -175,7 +175,7 @@ you're **adding bias** into your calculations. Your agent will learn faster, but
 
     ![image8]
 
-## A3C: Asynchronous Advantage Actor-Critic, N-step Bootstrapping <a name="a3c_1"></a>
+## A3C: Asynchronous Advantage Actor-Critic, N-step Bootstrapping <a id="a3c_1"></a>
 - Actor-Critic Agent as before
 - Instead of TD estimate agent uses ***n-step bootstrapping***: A generalization of TD and Monte-Carlo estimates
 - TD is a one-step bootstrapping. Agent experiences one-time-step of real rewards and bootstraps right there
@@ -189,7 +189,7 @@ you're **adding bias** into your calculations. Your agent will learn faster, but
 - In Practice: 4 or 5 steps bootstrapping are often the best.
 
 
-## A3C: Asynchronous Advantage Actor-Critic, Parallel Training <a name="a3c_2"></a>
+## A3C: Asynchronous Advantage Actor-Critic, Parallel Training <a id="a3c_2"></a>
  - Unlike DQN, AC3 does not use a replay buffer.
  - In DQN we needed a replay buffer to decorrelate state-action tuples of consecutive time steps (experience at time step t+1 will be correlated to experience at time step t)
 
@@ -206,7 +206,7 @@ you're **adding bias** into your calculations. Your agent will learn faster, but
     ![image11]
 
 
-## A3C: Asynchronous Advantage Actor-Critic, Off-policy vs. On-policy <a name="a3c_3"></a>
+## A3C: Asynchronous Advantage Actor-Critic, Off-policy vs. On-policy <a id="a3c_3"></a>
 - Helpful medium blog post on policies [Off-policy vs On-Policy vs Offline Reinforcement Learning Demystified!](https://kowshikchilamkurthy.medium.com/off-policy-vs-on-policy-vs-offline-reinforcement-learning-demystified-f7f87e275b48)
 - Check out my GitHub page on [Temporal Difference Methods - SARSA and Q-Learning](https://github.com/ddhartma/Deep-Reinforcement-Learning-Theory-Temporal-Difference-Methods#sarsamax). Check out the images and tables on SARSA and Q-Learning to understand the on and off policy difference.
 - ***On-Policy learning***: Policy which is used for interacting with the environment is also the policy being learned (e.g. SARSA)
@@ -228,7 +228,7 @@ you're **adding bias** into your calculations. Your agent will learn faster, but
 
 - [Q-Prop paper](https://arxiv.org/abs/1611.02247)
 
-## A2C: Advantage Actor-Critic <a name="a2c"></a>
+## A2C: Advantage Actor-Critic <a id="a2c"></a>
 ### What means ***Asynchronous*** in 'Asynchronous Advantage Actor-Critic'?
 - In A3C: Each agent uses a **local copy of the network** to collect experience, calculate and **accumulate gradient updates** across **multiple time steps** and applies them **asynchronously** to a neural network.
 - Asynchronous means that each agent will update the network on its own.
@@ -249,12 +249,12 @@ Consider:
 ![image13]
 
 
-## A2C: Code Walk-through <a name="a2c_code"></a>
+## A2C: Code Walk-through <a id="a2c_code"></a>
 - GitHub repo of [ShangtongZhang - Deep RL](https://github.com/ShangtongZhang/DeepRL)
 - Video tutorial on YouTube [Video](https://www.youtube.com/watch?time_continue=7&v=LiUBJje2N0c&feature=emb_logo)
 
 
-## GAE: Generalized Advantage Estimation <a name="gae"></a>
+## GAE: Generalized Advantage Estimation <a id="gae"></a>
 - Use **λ return**
 - n-step bootstrapping with n>1 often performs better
 - However: It is still hard to tell what the number should be
@@ -275,7 +275,7 @@ Keep in mind:
 
     ![image14]
 
-## DDPG: Deep Deterministic Policy Gradient, Continuous Action-space <a name="ddpg_1"></a>
+## DDPG: Deep Deterministic Policy Gradient, Continuous Action-space <a id="ddpg_1"></a>
 - Read the [DDPG Paper](https://arxiv.org/abs/1509.02971)
 - DDPG is a different kind of actor-critic method.
 
@@ -304,7 +304,7 @@ What is the DDPG architecture?
 
     ![image16]
 
-## DDPG: Deep Deterministic Policy Gradient, Soft Updates <a name="ddpg_2"></a>
+## DDPG: Deep Deterministic Policy Gradient, Soft Updates <a id="ddpg_2"></a>
 Two aspects of DDPG are interesting:
 - The use of a replay buffer
 - Soft updates to the target network
@@ -323,12 +323,12 @@ Update strategy in DDPG:
     ![image17]
 
 
-## DDPG: Code Walk-through <a name="ddpg_code"></a>
+## DDPG: Code Walk-through <a id="ddpg_code"></a>
 - [Udacity DRL Github Repository](https://github.com/udacity/deep-reinforcement-learning)
 - GitHub repo of [ShangtongZhang - Deep RL](https://github.com/ShangtongZhang/DeepRL)
 - Video tutorial on YouTube [Video](https://www.youtube.com/watch?time_continue=7&v=LiUBJje2N0c&feature=emb_logo)
 
-## DDPG: Code Implementation <a name="ddpg_impl"></a> 
+## DDPG: Code Implementation <a id="ddpg_impl"></a> 
 - [Udacity DRL Github Repository: DDPG-pendulum](https://github.com/udacity/deep-reinforcement-learning/tree/master/ddpg-pendulum)
 
 - Use setup instructions shown in repo [Deep Reinforcement Learning Project - Continuous Control](https://github.com/ddhartma/Deep-Reinforcement-Learning-Project-Continuous-Control#deep-reinforcement-learning-project---continuous-control)
@@ -342,14 +342,14 @@ Update strategy in DDPG:
 ### DDPG Model
 - Open Jupyter Notebook ```notebooks_python/model.py```
 
-## DDPG: Paper Walk-through <a name="ddpg_paper"></a> 
+## DDPG: Paper Walk-through <a id="ddpg_paper"></a> 
 
-## Setup Instructions <a name="Setup_Instructions"></a>
+## Setup Instructions <a id="Setup_Instructions"></a>
 The following is a brief set of instructions on setting up a cloned repository.
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-### Prerequisites: Installation of Python via Anaconda and Command Line Interaface <a name="Prerequisites"></a>
+### Prerequisites: Installation of Python via Anaconda and Command Line Interaface <a id="Prerequisites"></a>
 - Install [Anaconda](https://www.anaconda.com/distribution/). Install Python 3.7 - 64 Bit
 
 - Upgrade Anaconda via
@@ -363,7 +363,7 @@ $ conda upgrade --all
 $ export PATH="/path/to/anaconda/bin:$PATH"
 ```
 
-### Clone the project <a name="Clone_the_project"></a>
+### Clone the project <a id="Clone_the_project"></a>
 - Open your Command Line Interface
 - Change Directory to your project older, e.g. `cd my_github_projects`
 - Clone the Github Project inside this folder with Git Bash (Terminal) via:
@@ -399,10 +399,10 @@ seaborn = 0.8.1
 $ conda env list
 ```
 
-## Acknowledgments <a name="Acknowledgments"></a>
+## Acknowledgments <a id="Acknowledgments"></a>
 * This project is part of the Udacity Nanodegree program 'Deep Reinforcement Learning'. Please check this [link](https://www.udacity.com) for more information.
 
-## Further Links <a name="Further_Links"></a>
+## Further Links <a id="Further_Links"></a>
 
 Git/Github
 * [GitFlow](https://datasift.github.io/gitflow/IntroducingGitFlow.html)
@@ -416,11 +416,39 @@ Docstrings, DRY, PEP8
 
 Further Deep Reinforcement Learning References
 * [Very good summary of DQN](https://medium.com/@nisheed/udacity-deep-reinforcement-learning-project-1-navigation-d16b43793af5)
+* [An Introduction to Deep Reinforcement Learning](https://thomassimonini.medium.com/an-introduction-to-deep-reinforcement-learning-17a565999c0c)
 * Helpful medium blog post on policies [Off-policy vs On-Policy vs Offline Reinforcement Learning Demystified!](https://kowshikchilamkurthy.medium.com/off-policy-vs-on-policy-vs-offline-reinforcement-learning-demystified-f7f87e275b48)
 * [Understanding Baseline Techniques for REINFORCE](https://medium.com/@fork.tree.ai/understanding-baseline-techniques-for-reinforce-53a1e2279b57)
 * [Cheatsheet](https://raw.githubusercontent.com/udacity/deep-reinforcement-learning/master/cheatsheet/cheatsheet.pdf)
+* [Reinforcement Learning Cheat Sheet](https://towardsdatascience.com/reinforcement-learning-cheat-sheet-2f9453df7651)
 * [Reinforcement Learning Textbook](https://s3-us-west-1.amazonaws.com/udacity-drlnd/bookdraft2018.pdf)
 * [Reinforcement Learning Textbook - GitHub Repo to Python Examples](https://github.com/ShangtongZhang/reinforcement-learning-an-introduction)
 * [Udacity DRL Github Repository](https://github.com/udacity/deep-reinforcement-learning)
 * [Open AI Gym - Installation Guide](https://github.com/openai/gym#installation)
 * [Deep Reinforcement Learning Nanodegree Links](https://docs.google.com/spreadsheets/d/19jUvEO82qt3itGP3mXRmaoMbVOyE6bLOp5_QwqITzaM/edit#gid=0)
+
+Important publications
+* [2004 Y. Ng et al., Autonomoushelicopterflightviareinforcementlearning --> Inverse Reinforcement Learning](https://people.eecs.berkeley.edu/~jordan/papers/ng-etal03.pdf)
+* [2004 Kohl et al., Policy Gradient Reinforcement Learning for FastQuadrupedal Locomotion --> Policy Gradient Methods](https://www.cs.utexas.edu/~pstone/Papers/bib2html-links/icra04.pdf)
+* [2013-2015, Mnih et al. Human-level control through deep reinforcementlearning --> DQN](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
+* [2014, Silver et al., Deterministic Policy Gradient Algorithms --> DPG](http://proceedings.mlr.press/v32/silver14.html)
+* [2015, Lillicrap et al., Continuous control with deep reinforcement learning --> DDPG](https://arxiv.org/abs/1509.02971)
+* [2015, Schulman et al, High-Dimensional Continuous Control Using Generalized Advantage Estimation --> GAE](https://arxiv.org/abs/1506.02438)
+* [2016, Schulman et al., Benchmarking Deep Reinforcement Learning for Continuous Control --> TRPO and GAE](https://arxiv.org/abs/1604.06778)
+* [2017, PPO](https://openai.com/blog/openai-baselines-ppo/)
+* [2018, Bart-Maron et al., Distributed Distributional Deterministic Policy Gradients](https://openreview.net/forum?id=SyZipzbCb)
+* [2013, Sergey et al., Guided Policy Search --> GPS](https://graphics.stanford.edu/projects/gpspaper/gps_full.pdf)
+* [2015, van Hasselt et al., Deep Reinforcement Learning with Double Q-learning --> DDQN](https://arxiv.org/abs/1509.06461)
+* [1993, Truhn et al., Issues in Using Function Approximation for Reinforcement Learning](https://www.ri.cmu.edu/pub_files/pub1/thrun_sebastian_1993_1/thrun_sebastian_1993_1.pdf)
+* [2015, Schaul et al., Prioritized Experience Replay --> PER](https://arxiv.org/abs/1511.05952)
+* [2015, Wang et al., Dueling Network Architectures for Deep Reinforcement Learning](https://arxiv.org/abs/1511.06581)
+* [2016, Silver et al., Mastering the game of Go with deep neural networks and tree search](https://www.researchgate.net/publication/292074166_Mastering_the_game_of_Go_with_deep_neural_networks_and_tree_search)
+* [2017, Hessel et al. Rainbow: Combining Improvements in Deep Reinforcement Learning](https://arxiv.org/abs/1710.02298)
+* [2016, Mnih et al., Asynchronous Methods for Deep Reinforcement Learning](https://arxiv.org/abs/1602.01783)
+* [2017, Bellemare et al., A Distributional Perspective on Reinforcement Learning](https://arxiv.org/abs/1707.06887)
+* [2017, Fortunato et al., Noisy Networks for Exploration](https://arxiv.org/abs/1706.10295)
+* [2016, Wang et al., Sample Efficient Actor-Critic with Experience Replay --> ACER](https://arxiv.org/abs/1611.01224)
+* [2017, Lowe et al. Multi-Agent Actor-Critic for MixedCooperative-Competitive Environments](https://papers.nips.cc/paper/2017/file/68a9750337a418a86fe06c1991a1d64c-Paper.pdf)
+* [2017, Silver et al. Mastering the Game of Go without Human Knowledge --> AlphaGo Zero](https://discovery.ucl.ac.uk/id/eprint/10045895/1/agz_unformatted_nature.pdf)
+* [2017, Silver et al., Mastering Chess and Shogi by Self-Play with aGeneral Reinforcement Learning Algorithm --> AlphaZero](https://arxiv.org/pdf/1712.01815.pdf)
+
